@@ -30,6 +30,18 @@ describe("read-only PO Agent API", () => {
     expect(serialized).not.toContain("server-secret");
   });
 
+  it("preserves required response fields while allowing additive MR-B context telemetry", async () => {
+    const response = await handlePoAgentPost(request({ question: "What should we work on next?" }), {
+      environment: { OPENAI_API_KEY: "server-secret" },
+      runner: async () => ({
+        answer: "Observed fact.", readOnly: true, canonicalSource: "docs/SCOPE.md", sourceRevision: "test-sha", diagnosticCount: 0,
+        usage: { model: "gpt-5.6-sol", inputTokens: 10, outputTokens: 5, totalTokens: 15, cachedInputTokens: null, uncachedInputTokens: 10, estimatedCostUsd: 0.001, costLabel: "ESTIMATED", costAssumption: "assumes_uncached_input", costLimitation: null },
+        contextTelemetry: { configuredMode: "shadow", mode: "shadow", taskClass: "po_next_work_explanation", classificationStatus: "supported", fallbackReason: null, baselineInputTokens: 10, rawEvidenceItemCount: 7, rawEstimatedTokens: 50, legacyEquivalentEstimatedTokens: 100, packedEvidenceItemCount: 7, packedEstimatedTokens: 40, omittedEvidenceCount: 0, mandatoryEvidenceRetained: true, budgetStatus: "FIT", estimatedReductionPercent: 60, actualInputTokens: 10, aggregateRunInputTokens: 10, aggregateRunOutputTokens: 5, modelRequestCount: 2, perRequestUsage: null, toolCallCount: 1 },
+      }),
+    });
+    expect(await response.json()).toMatchObject({ answer: "Observed fact.", readOnly: true, canonicalSource: "docs/SCOPE.md", sourceRevision: "test-sha", diagnosticCount: 0, contextTelemetry: { mode: "shadow", taskClass: "po_next_work_explanation" } });
+  });
+
   it.each([undefined, "false"])("fails closed in Production when enablement is %s", async (enabled) => {
     let invocations = 0;
     const response = await handlePoAgentPost(request({ question: "Explain scope" }), {

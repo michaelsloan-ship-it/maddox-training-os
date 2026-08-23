@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { SafeMarkdown } from "./SafeMarkdown";
 import { accumulateSessionEstimatedCost, type PoAgentUsageMetadata } from "@/lib/governance/agent/usageMetadata";
+import type { PoContextTelemetry } from "@/lib/governance/agent/orchestrator";
 
 const starterPrompts = [
   "What should we work on next?",
@@ -18,6 +19,7 @@ interface LabResponse {
   error?: string;
   sourceRevision?: string;
   usage?: PoAgentUsageMetadata;
+  contextTelemetry?: PoContextTelemetry;
 }
 
 export function PoAgentLab({ configured }: { configured: boolean }) {
@@ -76,6 +78,18 @@ export function PoAgentLab({ configured }: { configured: boolean }) {
           <div><dt className="label">Estimated session total</dt><dd>{sessionTotal === null ? "Unavailable" : `$${sessionTotal.toFixed(6)}`}</dd></div>
           {response.usage.costAssumption && <div className="sm:col-span-3"><dt className="label">Assumption</dt><dd>{response.usage.costAssumption === "assumes_uncached_input" ? "Uncached input" : "SDK cached-input breakdown"}</dd></div>}
           {response.usage.costLimitation && <div className="sm:col-span-3"><dt className="label">Cost limitation</dt><dd>{response.usage.costLimitation}</dd></div>}
+        </dl>}
+        {response?.contextTelemetry && <dl className="mt-5 grid gap-2 border-t border-rink pt-4 text-sm sm:grid-cols-3" data-po-context-telemetry>
+          <div><dt className="label">Context mode</dt><dd>{response.contextTelemetry.mode}</dd></div>
+          <div><dt className="label">Task class</dt><dd>{response.contextTelemetry.taskClass ?? response.contextTelemetry.classificationStatus}</dd></div>
+          <div><dt className="label">Budget status</dt><dd>{response.contextTelemetry.budgetStatus ?? "Not packed"}</dd></div>
+          <div><dt className="label">Legacy-equivalent estimate</dt><dd>{response.contextTelemetry.legacyEquivalentEstimatedTokens ?? "Unavailable"}</dd></div>
+          <div><dt className="label">Packed estimate</dt><dd>{response.contextTelemetry.packedEstimatedTokens ?? "Unavailable"}</dd></div>
+          <div><dt className="label">Estimated reduction</dt><dd>{response.contextTelemetry.estimatedReductionPercent === null ? "Unavailable" : `${response.contextTelemetry.estimatedReductionPercent.toFixed(1)}%`}</dd></div>
+          <div><dt className="label">Omitted evidence</dt><dd>{response.contextTelemetry.omittedEvidenceCount ?? "Unavailable"}</dd></div>
+          <div><dt className="label">Aggregate input usage</dt><dd>{response.contextTelemetry.actualInputTokens ?? "Unavailable"}</dd></div>
+          <div><dt className="label">Model requests</dt><dd>{response.contextTelemetry.modelRequestCount ?? "Unavailable"}</dd></div>
+          {response.contextTelemetry.fallbackReason && <div className="sm:col-span-3"><dt className="label">Fallback</dt><dd>{response.contextTelemetry.fallbackReason}</dd></div>}
         </dl>}
       </div>
     </section>
