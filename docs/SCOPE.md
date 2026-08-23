@@ -162,6 +162,7 @@ Every active scope item should use this structure, either as a detailed record b
 | 4.13 | DEF-SUPABASE-STAGING-AUTOPAUSE-001 | Supabase staging project at risk of inactivity auto-pause | P2 | In progress | Docs-only / environment-safety | Warning and project ref are documented; decision remains whether to allow manual resume, add a safe read-only staging health check, or upgrade if staging uptime matters. |
 | 4.14 | DEF-QA-USAGE-LEDGER-001 | No prompt-level Codex usage ledger exists | P2 | Not started | Docs-only / workflow | Define a lightweight usage ledger after the environment and Gantt duration items are handled. |
 | 4.15 | GOV-PO-AGENT-001 | Project Owner Intelligence & Portfolio Governance Agent | P1 | In progress | Safe lane / governance architecture | Phase A is merged at `3f7872d`; Phase B is implemented, locally validated, and Product Owner live-accepted. Next architecture step is `MODEL-ROUTING-001` design before Phase C. |
+| 4.15.1 | MODEL-ROUTING-001 | Provider-Neutral Intelligence Gateway and Deterministic Model Routing | P1 | In progress | Safe lane / governance architecture | MR-A Gateway Foundation is implemented locally, architecture-reviewed, accepted, and ready for commit/PR; MR-B remains subject to Product Owner authorization after merge. |
 | 4.16 | ADMIN-PROJECT-OWNER-CONSOLE-001 | Project Owner / Architecture / Scope Administration Console | P1 | Not started | Safe lane | Design the human interaction and visualization surface against the approved `GOV-PO-AGENT-001` contracts before implementation. |
 | 5 | CODE-COMMENT-AUDIT-001 | Stale Inline Comment / TODO Audit | P1 | Completed | Fast lane | Inspect-only comment-risk scan is recorded in the detailed scope record; no behavior changes were required. |
 | 6 | FORENSIC-DAY-SESSION-MISMATCH-001 | Forensic Day/Session data-flow audit | P1 | Completed | Fast lane | Audit found Day and Session use divergent presentation paths; use findings to drive canonical contract. |
@@ -238,7 +239,7 @@ Execution gate: tactical current-app defects may be fixed separately as bounded 
 
 | Status | IDs |
 | --- | --- |
-| In progress | QA-SYSTEM-001, QA-AUTOMATION-OWNERSHIP-001, DEF-PLAN-GANTT-14WEEK-SPAN-001, DEF-QA-CODEX-RUNNER-001, KPI-ROADMAP-001, DESIGN-GATE-001, TRANSITION-001, DATA-GOV-001, SOURCE-VALIDATION-001, RESEARCH-REPOSITORIES-001, KNOWLEDGE-INGESTION-001, HEURISTIC-SCORING-001, ATHLETE-PERSONALIZATION-001, SENSOR-FEEDBACK-001, MODEL-GOVERNANCE-001, STACK-EVOLUTION-001, DEF-DAY-DURATION-CONTRACT-001, GOV-PO-AGENT-001, DEF-027 |
+| In progress | QA-SYSTEM-001, QA-AUTOMATION-OWNERSHIP-001, DEF-PLAN-GANTT-14WEEK-SPAN-001, DEF-QA-CODEX-RUNNER-001, KPI-ROADMAP-001, DESIGN-GATE-001, TRANSITION-001, DATA-GOV-001, SOURCE-VALIDATION-001, RESEARCH-REPOSITORIES-001, KNOWLEDGE-INGESTION-001, HEURISTIC-SCORING-001, ATHLETE-PERSONALIZATION-001, SENSOR-FEEDBACK-001, MODEL-GOVERNANCE-001, STACK-EVOLUTION-001, DEF-DAY-DURATION-CONTRACT-001, GOV-PO-AGENT-001, MODEL-ROUTING-001, DEF-027 |
 | Production runtime verified / Preview runtime pending | None |
 | Reopened / product QA found incomplete rendering-path coverage | None |
 | Blocked | ACTIVITY-PRESCRIPTION-001, DEF-021, DEF-022, DEF-023, DEF-024, DEF-025, DEF-026 |
@@ -1326,6 +1327,32 @@ Advanced KPI scope:
 - Risks: Unsupported assessments could be mistaken for facts; fabricated scores or dependency edges could distort sequencing; Working state could leak into Canonical state; unsafe or ambiguous Markdown targeting could remove or rewrite scope; an agreeable agent could conceal important tradeoffs.
 - Next action: Design `MODEL-ROUTING-001` before Phase C. Do not create or implement that scope, begin Phase C mutations, or start `ADMIN-PROJECT-OWNER-CONSOLE-001` as part of the Phase B closeout.
 - Links / evidence: GitHub Issue #8 and Product Owner Technical Design v1 approval comment dated 2026-08-23; GitHub Issue #7 approved conversational-PO-workspace and design-dependency comments; GitHub Issue #10; `AGENTS.md`; `docs/SCOPE.md`; `docs/design/DESIGN_GATE.md`; `docs/design/ARCHITECTURE_GOVERNANCE_TRACKS.md`; `docs/design/ROLE_RACI.md`; `docs/design/DECISION_LOG.md`.
+
+### MODEL-ROUTING-001
+
+- ID: MODEL-ROUTING-001
+- Title: Provider-Neutral Intelligence Gateway and Deterministic Model Routing
+- Type: Initiative / Feature
+- Parent: GOV-PO-AGENT-001 / Intelligence architecture
+- Priority: P1
+- Status: In progress
+- Lane: Safe lane / governance architecture
+- Owner: Mike / ChatGPT architecture / Codex implementation
+- Source: GitHub Issue #13 conceptual, functional, and Technical Design v0.1 approval; Phase B live acceptance context-volume finding.
+- Problem: Product features currently bind intelligence requests directly to a provider/model path, while privacy, capability, approval, health, context, latency, and cost constraints lack one deterministic provider-neutral routing contract.
+- Desired outcome: Product/domain code requests an intelligence capability through a typed task contract; a deterministic gateway plans an approved privacy-safe route, explicit fallback, context packet, normalized cost/usage, and provenance without allowing an LLM to select its own route.
+- In scope:
+  - Conceptual, Functional, and Technical Design v0.1 are approved.
+  - MR-A Gateway Foundation is implemented locally, architecture-reviewed, accepted, and ready for commit/PR: provider-neutral task/result, privacy, capability, tier, provider/model registry, task-specific approval, deterministic route-planning, escalation, context-budget, pricing/usage, telemetry, provider-adapter, health, and benchmark/eval contracts.
+  - Accepted MR-A hardening: every task has explicit `inferenceRequirement` and `deterministicPathAvailable` inputs; hard cost budgets fail closed, including `cost_unknown_under_hard_limit` when cost cannot be proven; soft budgets remain informational; required evidence cannot be silently omitted and rejects the packet when it alone exceeds budget; provider eligibility uses explicit privacy allowlists.
+  - Tier 0 deterministic/no-model decisions and local first-right-of-refusal only when every approval, privacy, capability, health, context, latency, and cost constraint passes.
+  - Phase B compatibility: existing PO Agent runtime, model choice, response behavior, PO Lab, and fail-closed deployment gate remain unchanged.
+- Out of scope: GOV-PO-AGENT-001 Phase C; current PO Agent migration; live provider adapters or calls; local-model integration or experiments; Coach runtime/UI; authentication; Supabase/GitHub writes; v8.4 edits; deployment; RAG/vector database; fine-tuning; second backend service.
+- Acceptance criteria: MR-A deterministic and privacy/security tests pass; plan performs no model call; missing evidence/pricing remains explicit; no provider-specific response type escapes adapter contracts; context omission is visible; current Phase B interfaces remain compatible; standard app validation and v8.4 verification pass.
+- Dependencies: GOV-PO-AGENT-001 Phase B accepted baseline; approved Issue #13 design; architecture review before commit/PR or runtime integration.
+- Risks: registry metadata can become stale; model approvals require benchmark evidence; token estimates are pre-call estimates; provider health is supplied state without network probes; future execution adapters must preserve privacy and normalized-result boundaries.
+- Next action: Commit, open a PR, pass CI, and merge MR-A. After merge, MR-B is the next candidate subject to Product Owner authorization; do not mark MR-B or GOV-PO-AGENT-001 Phase C started from this closeout.
+- Links / evidence: GitHub Issue #13; `GOV-PO-AGENT-001`; `lib/intelligence/`; Phase B live acceptance telemetry recorded above.
 
 ### ADMIN-PROJECT-OWNER-CONSOLE-001
 
