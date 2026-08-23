@@ -8,7 +8,7 @@ const scopeItem: ScopeItem = {
   owner: "Mike", source: "Fixture", problem: "Problem", desiredOutcome: "Outcome", inScope: [], outOfScope: [], acceptanceCriteria: [],
   dependencies: [], risks: [], nextAction: "Next", linksEvidence: [], scores: {}, sourceLocation: { filePath: "fixture", heading: "TEST-SCOPE-001", recordFingerprint: "hash" }, missingFields: [],
 };
-const canonical: CanonicalPortfolio = { metadata: { sourceFilePath: "fixture", sourceGitSha: "sha", sourceContentHash: "hash", parsedAt: null }, items: [scopeItem], references: [], dependencyEdges: [] };
+const canonical: CanonicalPortfolio = { metadata: { sourceFilePath: "fixture", sourceGitSha: "sha", sourceContentHash: "hash", parsedAt: null }, items: [scopeItem], references: [], sequencingEvidence: [], dependencyEdges: [] };
 
 function mutation(overrides: Partial<PortfolioMutation> = {}): PortfolioMutation {
   return {
