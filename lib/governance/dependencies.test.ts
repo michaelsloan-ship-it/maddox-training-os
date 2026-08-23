@@ -8,7 +8,7 @@ const item = (id: string): ScopeItem => ({
   source: null, problem: null, desiredOutcome: null, inScope: [], outOfScope: [], acceptanceCriteria: [], dependencies: [], risks: [],
   nextAction: null, linksEvidence: [], scores: {}, sourceLocation: { filePath: "fixture", heading: id, recordFingerprint: id }, missingFields: [],
 });
-const portfolio: CanonicalPortfolio = { metadata: { sourceFilePath: "fixture", sourceGitSha: "sha", sourceContentHash: "hash", parsedAt: null }, items: [item("A-001"), item("B-001"), item("C-001")], references: [], dependencyEdges: [] };
+const portfolio: CanonicalPortfolio = { metadata: { sourceFilePath: "fixture", sourceGitSha: "sha", sourceContentHash: "hash", parsedAt: null }, items: [item("A-001"), item("B-001"), item("C-001")], references: [], sequencingEvidence: [], dependencyEdges: [] };
 const edge = (fromScopeId: string, toScopeId: string, relationshipType: DependencyEdge["relationshipType"] = "requires"): DependencyEdge => ({
   fromScopeId, toScopeId, relationshipType, state: "canonical", provenance: "observed_fact", evidenceRefs: ["fixture"], confidence: "high",
 });

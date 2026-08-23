@@ -161,7 +161,7 @@ Every active scope item should use this structure, either as a detailed record b
 | 4.12 | DEF-QA-CODEX-RUNNER-001 | Codex is being used as a recurring manual smoke-test runner | P1 | In progress | Docs-only / QA workflow | Repeated forward browser regression is CI-owned; remove the remaining recurring manual core-route smoke burden. |
 | 4.13 | DEF-SUPABASE-STAGING-AUTOPAUSE-001 | Supabase staging project at risk of inactivity auto-pause | P2 | In progress | Docs-only / environment-safety | Warning and project ref are documented; decision remains whether to allow manual resume, add a safe read-only staging health check, or upgrade if staging uptime matters. |
 | 4.14 | DEF-QA-USAGE-LEDGER-001 | No prompt-level Codex usage ledger exists | P2 | Not started | Docs-only / workflow | Define a lightweight usage ledger after the environment and Gantt duration items are handled. |
-| 4.15 | GOV-PO-AGENT-001 | Project Owner Intelligence & Portfolio Governance Agent | P1 | In progress | Safe lane / governance architecture | Phase A deterministic foundations are implemented and verified locally; next is Phase B read-only PO Agent integration using typed read tools and the evaluation harness. |
+| 4.15 | GOV-PO-AGENT-001 | Project Owner Intelligence & Portfolio Governance Agent | P1 | In progress | Safe lane / governance architecture | Phase A is merged at `3f7872d`; Phase B is implemented, locally validated, and Product Owner live-accepted. Next architecture step is `MODEL-ROUTING-001` design before Phase C. |
 | 4.16 | ADMIN-PROJECT-OWNER-CONSOLE-001 | Project Owner / Architecture / Scope Administration Console | P1 | Not started | Safe lane | Design the human interaction and visualization surface against the approved `GOV-PO-AGENT-001` contracts before implementation. |
 | 5 | CODE-COMMENT-AUDIT-001 | Stale Inline Comment / TODO Audit | P1 | Completed | Fast lane | Inspect-only comment-risk scan is recorded in the detailed scope record; no behavior changes were required. |
 | 6 | FORENSIC-DAY-SESSION-MISMATCH-001 | Forensic Day/Session data-flow audit | P1 | Completed | Fast lane | Audit found Day and Session use divergent presentation paths; use findings to drive canonical contract. |
@@ -213,6 +213,7 @@ Next task brief:
 
 - Read `AGENTS.md`, `docs/SESSION_HANDOFF.md`, and this file first.
 - Environment isolation is complete for current Production and fresh Preview deployments; keep normal no-secret/no-production-write guardrails.
+- `ENV-SAFETY-LOCAL-PROD-GUARD` remains a stale `Scope review required` detailed record while current sprint evidence says environment isolation is complete; reconcile it before treating it as executable work.
 - `QA-PLAYWRIGHT-SMOKE-001` is complete on PR #6 final head: Today redirect and Plan/Gantt read-only browser coverage are CI-owned and green.
 - Merge and Production-smoke `DEF-PLAN-GANTT-14WEEK-SPAN-001`; then prioritize `DEF-DAY-DURATION-CONTRACT-001` as the next athlete-facing P1: define authoritative duration scopes without forcing unlike totals to match or inventing a replacement total.
 - Keep `DEF-QA-USAGE-LEDGER-001` as P2 workflow cleanup after the remaining P1 QA/duration work.
@@ -1038,7 +1039,7 @@ Advanced KPI scope:
 - Type: Initiative
 - Parent: Day-first architecture
 - Priority: P1
-- Status: Not started
+- Status: In progress
 - Lane: Docs-only
 - Owner: Mike / Codex
 - Source: QA/testing strategy and day projection notes
@@ -1059,7 +1060,7 @@ Advanced KPI scope:
 - Type: Initiative
 - Parent: Evidence projections
 - Priority: P1
-- Status: Not started
+- Status: In progress
 - Lane: Safe lane
 - Owner: Mike / Codex
 - Source: defect log and roadmap
@@ -1290,7 +1291,7 @@ Advanced KPI scope:
 - Type: Epic / Feature
 - Parent: Project governance / Agentic workflow
 - Priority: P1
-- Status: Not started
+- Status: In progress
 - Lane: Safe lane / governance architecture
 - Owner: Mike / ChatGPT orchestration / Codex implementation
 - Source: Parent conceptual/functional approval 2026-08-22; Product Owner Technical Design v1 approval 2026-08-23; GitHub Issue #8.
@@ -1314,12 +1315,16 @@ Advanced KPI scope:
   - A golden PO Agent evaluation suite covering evidence/citation correctness; scoring consistency and unsupported scoring; hallucinated/missed dependencies; stale-scope and alignment detection; architecture/guardrail compliance; unsafe-action escalation; recommendation/tradeoff quality; mutation correctness; Canonical/Working isolation; Markdown patch targeting; and human-approval escalation.
   - Approved Technical Design v1 decisions: use the existing Next.js/TypeScript server runtime; use the OpenAI Agents SDK for TypeScript server-side; expose typed function tools only, with no shell, `apply_patch`, or generic filesystem tool; use a deterministic SCOPE parser and Markdown patcher; overlay Working Portfolio state on an immutable Canonical snapshot; keep governance/session data separate from athlete training tables; do not require Admin authentication for the current private-family deployment; defer Supabase Auth until broader-go-live hardening; use an eventual least-privilege server-side GitHub integration for GitHub writes; and complete deterministic foundations plus the evaluation harness before gated L3 writes.
   - Current private-use Admin access decision: the Admin/PO Console is not linked from athlete-facing navigation and may use an unlinked route known to the Product Owner. This is private-deployment convenience, not a production-grade authentication boundary. Existing athlete Supabase anon/RLS permissions must not be broadened for Admin functionality, and all GitHub/repository mutation safeguards remain unchanged.
-  - Phase A deterministic foundations implemented and verified locally: typed domain/evidence/provenance/mutation models; deterministic supplied-text SCOPE parser with diagnostics and source-revision metadata; portfolio, score, dependency, and mutation validation; 1-5 score validation and explicit-input WSJF; typed dependency graph traversal/cycle detection; immutable Working Portfolio overlays; deterministic affected-fact recalculation; and focused Vitest fixtures including current canonical-record resolution.
+  - Phase A deterministic foundations merged to main at `3f7872d83b8e9ac2d3c423b58681e384a4bd99ad`: typed domain/evidence/provenance/mutation models; deterministic supplied-text SCOPE parser with diagnostics and source-revision metadata; portfolio, score, dependency, and mutation validation; 1-5 score validation and explicit-input WSJF; typed dependency graph traversal/cycle detection; immutable Working Portfolio overlays; deterministic affected-fact recalculation; and focused Vitest fixtures including current canonical-record resolution.
+  - Phase B implemented, locally validated, and Product Owner live-acceptance passed: server-only canonical portfolio loader; eleven typed read-only portfolio tools; OpenAI Agents SDK server orchestration with no write-capable tools; evidence-authority/contradiction policy; validated read-only API boundary; ten structured golden evaluation scenarios with deterministic graders; safe response rendering; token/estimated-cost observability; and an unlinked `Project Owner Lab` engineering surface. The PO Lab is Phase B read-only interaction/testing infrastructure, not `ADMIN-PROJECT-OWNER-CONSOLE-001` implementation. The paid agent endpoint fails closed in Preview and Production unless `PO_AGENT_ENABLED=true` is explicitly configured server-side; this enablement gate does not replace the deferred broader-go-live authentication requirement.
+  - Phase B deterministic next-work regression resolved: the first live question, "What should we work on next?", exposed that the model could build a stale candidate pool from incomplete lifecycle/sequencing evidence. The corrected read-only candidate engine owns lifecycle eligibility, structured Active Queue / Current Sprint / checkpoint evidence, blocker/dependency state, deterministic ordering, and explicit contradiction propagation. The model explains and compares that result rather than constructing the candidate pool; stale `ENV-SAFETY-LOCAL-PROD-GUARD` cannot displace current executable work.
+  - Phase B live acceptance design finding, 2026-08-23: the first corrected live next-work acceptance recommended `DEF-DAY-DURATION-CONTRACT-001` and passed deterministic lifecycle/readiness plus Current Sprint selection. The run used `gpt-5.6-sol` with 27,705 input tokens, 270 output tokens, and 27,975 total tokens. With no cached-input breakdown recorded, the cost is estimated using the reviewed uncached-input rate, not asserted as an exact API charge. Context volume is materially high for a simple PO question; context optimization and multi-model/local-cloud routing are explicitly deferred to `MODEL-ROUTING-001` design and are not part of this Phase B closeout.
+  - Phase B capability boundary accepted: canonical portfolio state remains immutable; no canonical write tool, Phase C mutation capability, authentication expansion, Supabase write, or GitHub-write agent capability exists.
 - Out of scope: Application implementation in this capture; autonomous canonical mutation; direct `main` writes; scope deletion/rationalization; self-approval of agent assessments; merges; deployments; Production or training-data writes; changes to `imports/v8.4/data/*.json`; bypass of normal design, architecture, safety, or release governance.
 - Acceptance criteria: The conceptual/functional contract and Technical Design v1 are PO-approved; evidence/provenance, 1-5 rubric, dependency, three-state, structured mutation, Change Ledger/write-back, Architecture/Guardrail, autonomy, Admin Console integration, and golden-evaluation contracts are accepted and versionable; missing inputs remain explicit; direct-main and L5 mutation remain disabled; Scope.MD Aligned = yes.
 - Dependencies: Canonical `docs/SCOPE.md` authority; existing design, architecture, data-integrity, environment, and safety guardrails; `ADMIN-PROJECT-OWNER-CONSOLE-001` consumes this item's intelligence/conversation/governance contracts as its interaction surface.
 - Risks: Unsupported assessments could be mistaken for facts; fabricated scores or dependency edges could distort sequencing; Working state could leak into Canonical state; unsafe or ambiguous Markdown targeting could remove or rewrite scope; an agreeable agent could conceal important tradeoffs.
-- Next action: Phase B — read-only PO Agent integration using typed read tools and the evaluation harness. Phase B must preserve the deterministic foundation, Canonical/Working isolation, and existing write/auth boundaries.
+- Next action: Design `MODEL-ROUTING-001` before Phase C. Do not create or implement that scope, begin Phase C mutations, or start `ADMIN-PROJECT-OWNER-CONSOLE-001` as part of the Phase B closeout.
 - Links / evidence: GitHub Issue #8 and Product Owner Technical Design v1 approval comment dated 2026-08-23; GitHub Issue #7 approved conversational-PO-workspace and design-dependency comments; GitHub Issue #10; `AGENTS.md`; `docs/SCOPE.md`; `docs/design/DESIGN_GATE.md`; `docs/design/ARCHITECTURE_GOVERNANCE_TRACKS.md`; `docs/design/ROLE_RACI.md`; `docs/design/DECISION_LOG.md`.
 
 ### ADMIN-PROJECT-OWNER-CONSOLE-001
@@ -1695,7 +1700,7 @@ Production runtime smoke on 2026-07-09:
 - Owner: Mike / Codex
 - Source: Mike manual Vercel dashboard confirmation on 2026-07-08.
 - Problem: Vercel Supabase variables were scoped to "All Environments," so Preview and Development inherited production Supabase ref `mbjcedhysniabbaigsko`.
-- Purpose: Replace All-Environments inheritance for Preview/Development with environment-specific staging Supabase URL and anon key, while leaving Production pointed at production Supabase.
+- Desired outcome: Replace All-Environments inheritance for Preview/Development with environment-specific staging Supabase URL and anon key, while leaving Production pointed at production Supabase.
 - Final configured behavior:
   - Production -> `mbjcedhysniabbaigsko`
   - Preview -> `npuankmkxbjtlokbpczz`
@@ -2081,11 +2086,13 @@ This is a multi-Epic architecture track governed by DESIGN-GATE-001. Implementat
 - Desired outcome: /plan visibly represents the authoritative 14-week / 96-day performance period through Sep 18 without rewriting v8.4 or inventing W13/W14 legacy metrics.
 - In scope: derive Plan heading/date range and Gantt geometry from v8.4 phase dates; span Taper + Peak through W14; surface source-backed W13/W14 phase notes and Sport Loads; explicitly label the legacy Weekly Load chart W1-W12; add Today + Plan Playwright smoke.
 - Out of scope: edits to imports/v8.4/data/*.json, invented W13/W14 planned-load scores or coaching copy, Day/Calendar/KPI behavior, Supabase writes/config.
+- Acceptance criteria: /plan represents the authoritative 14-week / 96-day performance period through 2026-09-18; Taper + Peak spans through W14; source-backed W13/W14 phase notes and Sport Loads are visible; the legacy Weekly Load chart is explicitly labeled W1-W12; Today + Plan browser smoke passes; no v8.4 source data or unsupported W13/W14 values are invented.
 - Acceptance evidence: PR #6 final head f86611f; exact net product diff app/plan/page.tsx, components/WeeklyLoadChart.tsx, e2e/forward-product-quality.spec.ts; unit/projection tests passed; TypeScript passed; clean production build passed; full forward Playwright passed; exact-head Vercel Preview READY.
 - Remaining gate: merge PR #6 and verify resulting Production deployment before marking Completed.
 - Dependencies: v8.4 phaseLabels, ganttModel, Sport Loads; existing legacy W1-W12 descriptive plan copy.
 - Risks: duplicating or inventing late-period plan values would violate v8.4 source authority.
 - Next action: merge after this scope update, then Production-smoke /plan and verify release SHA.
+- Links / evidence: PR #6 final head `f86611f`; `app/plan/page.tsx`; `components/WeeklyLoadChart.tsx`; `e2e/forward-product-quality.spec.ts`; exact-head Vercel Preview READY evidence recorded above.
 
 ### DEF-DAY-DURATION-CONTRACT-001
 

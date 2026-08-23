@@ -18,7 +18,7 @@ function portfolio(portfolioScore: PortfolioScore): CanonicalPortfolio {
     risks: [], nextAction: null, linksEvidence: [], scores: { business_user_value: portfolioScore },
     sourceLocation: { filePath: "fixture", heading: "TEST-SCORE-001", recordFingerprint: "hash" }, missingFields: [],
   };
-  return { metadata: { sourceFilePath: "fixture", sourceGitSha: "sha", sourceContentHash: "hash", parsedAt: null }, items: [item], references: [], dependencyEdges: [] };
+  return { metadata: { sourceFilePath: "fixture", sourceGitSha: "sha", sourceContentHash: "hash", parsedAt: null }, items: [item], references: [], sequencingEvidence: [], dependencyEdges: [] };
 }
 
 describe("portfolio evidence vocabulary validation", () => {

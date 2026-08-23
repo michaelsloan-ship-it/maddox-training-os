@@ -1,4 +1,4 @@
-import type { CanonicalPortfolio, PortfolioReference, ScopeItem, ValidationDiagnostic } from "./types";
+import type { CanonicalPortfolio, PortfolioReference, ScopeItem, SequencingEvidence, SequencingEvidenceSource, ValidationDiagnostic } from "./types";
 
 const requiredFields = [
   "title", "type", "parent", "priority", "status", "lane", "owner", "source", "problem",
@@ -66,10 +66,55 @@ export function parseScopeMarkdown(input: ParseScopeInput): ParseScopeResult {
       },
       items,
       references: parseReferences(input.markdown),
+      sequencingEvidence: parseSequencingEvidence(input.markdown),
       dependencyEdges: [],
     },
     diagnostics,
   };
+}
+
+function parseSequencingEvidence(markdown: string): SequencingEvidence[] {
+  const evidence: SequencingEvidence[] = [];
+  for (const section of [
+    { heading: "Active Execution Queue", source: "active_execution_queue", authority: "canonical_queue_or_index" },
+    { heading: "Current Sprint / Next Codex Task", source: "current_sprint_next_task", authority: "current_repository_evidence" },
+    { heading: "Current Checkpoint", source: "current_checkpoint", authority: "historical_checkpoint_narrative" },
+  ] as const) {
+    const body = sectionBody(markdown, section.heading);
+    if (!body) continue;
+    for (const line of body.split("\n")) {
+      const scopeIds = extractScopeIds(line);
+      if (!scopeIds.length) continue;
+      const cells = line.startsWith("|") ? line.split("|").map((cell) => cell.trim()).filter(Boolean) : [];
+      const isQueueRow = section.source === "active_execution_queue" && /^\d+(?:\.\d+)?$/.test(cells[0] ?? "") && cells.length >= 7;
+      evidence.push({
+        sourceSection: section.source satisfies SequencingEvidenceSource,
+        referencedScopeIds: scopeIds,
+        context: line.trim(),
+        authority: section.authority,
+        queueOrder: isQueueRow ? Number(cells[0]) : null,
+        priority: isQueueRow ? cells[3] ?? null : null,
+        status: isQueueRow ? cells[4] ?? null : null,
+        lane: isQueueRow ? cells[5] ?? null : null,
+        nextAction: isQueueRow ? cells[6] ?? null : null,
+        contradictionMarkers: [],
+      });
+    }
+  }
+  return evidence;
+}
+
+function sectionBody(markdown: string, heading: string) {
+  const match = markdown.match(new RegExp(`^## ${escapeRegExp(heading)}\\n([\\s\\S]*?)(?=^## |\\Z)`, "m"));
+  return match?.[1] ?? "";
+}
+
+function extractScopeIds(value: string) {
+  return Array.from(new Set(value.match(/[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+/g) ?? [])).filter((value) => scopeIdPattern.test(value));
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function detailedRecordBlocks(markdown: string) {

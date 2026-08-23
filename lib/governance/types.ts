@@ -110,10 +110,27 @@ export interface PortfolioReference {
   context: string;
 }
 
+export const sequencingEvidenceSources = ["active_execution_queue", "current_sprint_next_task", "current_checkpoint"] as const;
+export type SequencingEvidenceSource = (typeof sequencingEvidenceSources)[number];
+
+export interface SequencingEvidence {
+  sourceSection: SequencingEvidenceSource;
+  referencedScopeIds: string[];
+  context: string;
+  authority: "canonical_queue_or_index" | "current_repository_evidence" | "historical_checkpoint_narrative";
+  queueOrder: number | null;
+  priority: string | null;
+  status: string | null;
+  lane: string | null;
+  nextAction: string | null;
+  contradictionMarkers: string[];
+}
+
 export interface CanonicalPortfolio {
   metadata: PortfolioSnapshotMetadata;
   items: ScopeItem[];
   references: PortfolioReference[];
+  sequencingEvidence: SequencingEvidence[];
   dependencyEdges: DependencyEdge[];
 }
 
