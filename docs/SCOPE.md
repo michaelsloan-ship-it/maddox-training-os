@@ -161,6 +161,8 @@ Every active scope item should use this structure, either as a detailed record b
 | 4.12 | DEF-QA-CODEX-RUNNER-001 | Codex is being used as a recurring manual smoke-test runner | P1 | In progress | Docs-only / QA workflow | Repeated forward browser regression is CI-owned; remove the remaining recurring manual core-route smoke burden. |
 | 4.13 | DEF-SUPABASE-STAGING-AUTOPAUSE-001 | Supabase staging project at risk of inactivity auto-pause | P2 | In progress | Docs-only / environment-safety | Warning and project ref are documented; decision remains whether to allow manual resume, add a safe read-only staging health check, or upgrade if staging uptime matters. |
 | 4.14 | DEF-QA-USAGE-LEDGER-001 | No prompt-level Codex usage ledger exists | P2 | Not started | Docs-only / workflow | Define a lightweight usage ledger after the environment and Gantt duration items are handled. |
+| 4.15 | GOV-PO-AGENT-001 | Project Owner Intelligence & Portfolio Governance Agent | P1 | Not started | Safe lane / governance architecture | Define and validate the evidence-backed PO intelligence, scoring, dependency, mutation, approval, and evaluation contracts before implementation. |
+| 4.16 | ADMIN-PROJECT-OWNER-CONSOLE-001 | Project Owner / Architecture / Scope Administration Console | P1 | Not started | Safe lane | Design the human interaction and visualization surface against the approved `GOV-PO-AGENT-001` contracts before implementation. |
 | 5 | CODE-COMMENT-AUDIT-001 | Stale Inline Comment / TODO Audit | P1 | Completed | Fast lane | Inspect-only comment-risk scan is recorded in the detailed scope record; no behavior changes were required. |
 | 6 | FORENSIC-DAY-SESSION-MISMATCH-001 | Forensic Day/Session data-flow audit | P1 | Completed | Fast lane | Audit found Day and Session use divergent presentation paths; use findings to drive canonical contract. |
 | 7 | SURFACE-PRESENTATION-CONSUMER-AUDIT-001 | Site-wide activity presentation consumer audit | P1 | Completed | Fast lane | Audit completed; use findings to constrain the next Day + Session parity implementation. |
@@ -240,7 +242,7 @@ Execution gate: tactical current-app defects may be fixed separately as bounded 
 | Reopened / product QA found incomplete rendering-path coverage | None |
 | Blocked | ACTIVITY-PRESCRIPTION-001, DEF-021, DEF-022, DEF-023, DEF-024, DEF-025, DEF-026 |
 | Completed locally | DEF-DAY-KPI-TRUTH-DIVERGENCE-001, DEF-TRAINING-WORK-CANONICAL-DAY-001, DEF-SPORTLOAD-CONDITIONING-CONTRADICTION-001, DEF-SPEEDSTACK-WARMUP-DETAIL-001, ACTIVITY-LOGGING-001 |
-| Not started | TEST-FIXTURE-001, RECOVERY-DAY-MODEL-001, DAY-FIRST-ARCH-001, KPI-HISTORY-DASHBOARD-001, DEF-014, DEF-016, DEF-018 |
+| Not started | TEST-FIXTURE-001, RECOVERY-DAY-MODEL-001, DAY-FIRST-ARCH-001, KPI-HISTORY-DASHBOARD-001, GOV-PO-AGENT-001, ADMIN-PROJECT-OWNER-CONSOLE-001, DEF-014, DEF-016, DEF-018 |
 | Scope review required | TRAINING-SAFETY-U12-001, CONDITIONING-MODEL-001, METHODOLOGY-001, DOMAIN-001, DOMAIN-DECISION-001, LOAD-001, ANALYTICS-001, PHASE-001, KPI-DOMAIN-001, READINESS-001, VISUALIZATION-001, RECOMMENDATION-001, QA-SAFETY-001, MLOPS-001, DEF-002, DEF-003, DEF-005, DEF-006, DEF-013, DEF-017, DEF-019, DEF-020 |
 | Completed | QA-PLAYWRIGHT-SMOKE-001, ENV-PREVIEW-DB-001, ENV-PREVIEW-DB-AUDIT-001, DEF-ENV-PREVIEW-SUPABASE-MAPPING-001, DEF-ENV-PREVIEW-STAGING-OVERRIDE-001, SPORT-LOAD-4V4-SUMMER-2026, PLAN-GANTT-SPORTLOAD-V84-001, CAL-UX-MOBILE-DAY-ROWS-001, PLAN-CONTENT-001, PLAN-TRYOUT-EXTENSION-2026-001, DEF-FORWARD-DRILL-ENVIRONMENT-FIT-001, AUDIT-LOAD-CLASSIFICATION-001, DEF-029, DEF-030, DEF-031, DEF-032, CODE-COMMENT-AUDIT-001, FORENSIC-DAY-SESSION-MISMATCH-001, SURFACE-PRESENTATION-CONSUMER-AUDIT-001, ACTIVITY-PRESENTATION-CONTRACT-001, FUTURE-DAY-READINESS-001, DAY-SESSION-PARITY-001, CONDITIONING-CARDIO-DURATION-001, QA-AUTOMATION-002, DEF-007, DEF-028 |
 
@@ -1280,6 +1282,71 @@ Advanced KPI scope:
 - Risks: process churn can distract from athlete readiness.
 - Next action: defer after P1 backlog.
 - Links / evidence: Gemini scope intake.
+
+### GOV-PO-AGENT-001
+
+- ID: GOV-PO-AGENT-001
+- Title: Project Owner Intelligence & Portfolio Governance Agent
+- Type: Epic / Feature
+- Parent: Project governance / Agentic workflow
+- Priority: P1
+- Status: Not started
+- Lane: Safe lane / governance architecture
+- Owner: Mike / ChatGPT orchestration / Codex implementation
+- Source: Parent approval 2026-08-22; GitHub Issue #8.
+- Problem: Portfolio truth, prioritization, dependencies, scoring evidence, release evidence, and governance are distributed across project sources. Missing metadata is difficult to assess consistently, and portfolio decisions can become dependent on chat interpretation.
+- Desired outcome: Create an evidence-backed conversational Product Owner intelligence layer that gathers project evidence; distinguishes facts from assessments; proposes missing portfolio metadata; scores scope using explicit rubrics; analyzes dependencies and sequencing; identifies stale or misaligned scope; supports scenario planning; challenges PO assumptions constructively; creates structured proposed scope mutations; maintains Working versus Canonical state; generates auditable Change Sets; and preserves human Product Owner authority.
+- In scope:
+  - Truth/provenance classes: Observed fact; Deterministically derived fact; Agent assessment; PO-approved decision. Agent assessments must never be presented as observed facts.
+  - Evidence records containing value, state, provenance, evidence refs, rationale, confidence, assessment version/date, approval state, and uncertainties/contradictions. `Not Scored` triggers evidence investigation: propose an evidence-backed score or identify the exact missing evidence and resolution path.
+  - Approved anchored 1-5 dimensions: Business/User Value; Time Criticality; Risk Reduction / Opportunity Enablement; Job Size / Effort; Complexity; Data Readiness; Blast Radius; Technical Risk; Dependency Criticality; Evaluation Readiness; Confidence; and Agentic Loop Stage / MVL role. No scores are assigned by this scope capture.
+  - Deterministic WSJF only when every required value exists: `(Business/User Value + Time Criticality + Risk Reduction/Opportunity Enablement) / Job Size`. Expose inputs and provenance; use no hidden defaults.
+  - Directed, typed, evidence-backed dependencies: blocks / blocked by; requires / required by; parent / child; supersedes / superseded by; relates to. Do not infer arbitrary relationships; only blocking/requirement relationships affect sequencing calculations.
+  - Agentic/MVL model: Foundation beneath `Perceive -> Reason -> Act -> Learn/Feedback`, with Guardrails/Evaluation cross-cutting. Future agentic scope is not implementation-ready when required loop stages, evaluation, or guardrails are absent.
+  - Persistent, in-context PO conversation while reviewing scope, visualizations, architecture, selected scope items, dependency subgraphs, and reconciliation queues. The agent explains, compares, recommends, challenges, and proposes changes while the human PO retains final authority.
+  - Three distinct states: Canonical repo state; Agent recommendation; Working PO state. Working state may deterministically recalculate affected views and scenarios but remains visibly proposed/uncommitted and cannot silently change Canonical state.
+  - Structured mutations with, at minimum: mutation ID; scope ID; field/path; canonical value; proposed value; rationale; evidence refs; confidence; provenance class; actor; affected records/files; guardrail impact; downstream recalculation; and state. Conversational commands must not become hidden free-form Markdown edits.
+  - A visible session Change Ledger that consolidates reviewed mutations into one coherent Change Set, rather than one PR per conversational edit. Support revision, individual/group undo, and reset to Canonical state.
+  - Persistence contract: Working state -> reviewed Change Set -> explicit PO approval -> validated branch -> deterministic Markdown patch -> PR -> normal merge/release governance. No direct `main` mutation.
+  - Constructive PO challenge behavior that surfaces conflicts, tradeoffs, uncertainties, alternatives, and approval needs rather than automatically agreeing.
+  - Architecture/Guardrail handoff: the PO Agent owns portfolio/product intelligence; Architecture/Guardrail authority owns architectural legality and safety and may block invalid persistence with evidence and remediation options.
+  - Autonomy levels L0 Observe, L1 Analyze, L2 Recommend, L3 Draft validated change set, L4 controlled branch/PR execution after authorization, and L5 autonomous canonical mutation. Initial target is L2 plus gated L3; L5 is not approved.
+  - A golden PO Agent evaluation suite covering evidence/citation correctness; scoring consistency and unsupported scoring; hallucinated/missed dependencies; stale-scope and alignment detection; architecture/guardrail compliance; unsafe-action escalation; recommendation/tradeoff quality; mutation correctness; Canonical/Working isolation; Markdown patch targeting; and human-approval escalation.
+- Out of scope: Application implementation in this capture; autonomous canonical mutation; direct `main` writes; scope deletion/rationalization; self-approval of agent assessments; merges; deployments; Production or training-data writes; changes to `imports/v8.4/data/*.json`; bypass of normal design, architecture, safety, or release governance.
+- Acceptance criteria: Evidence/provenance, 1-5 rubric, dependency, three-state, structured mutation, Change Ledger/write-back, Architecture/Guardrail, autonomy, Admin Console integration, and golden-evaluation contracts are accepted and versionable; missing inputs remain explicit; direct-main and L5 mutation remain disabled; Scope.MD Aligned = yes.
+- Dependencies: Canonical `docs/SCOPE.md` authority; existing design, architecture, data-integrity, environment, and safety guardrails; `ADMIN-PROJECT-OWNER-CONSOLE-001` consumes this item's intelligence/conversation/governance contracts as its interaction surface.
+- Risks: Unsupported assessments could be mistaken for facts; fabricated scores or dependency edges could distort sequencing; Working state could leak into Canonical state; unsafe or ambiguous Markdown targeting could remove or rewrite scope; an agreeable agent could conceal important tradeoffs.
+- Next action: Complete design/evaluation readiness and gated technical design before any implementation; target L2 plus carefully gated L3 only.
+- Links / evidence: GitHub Issue #8; GitHub Issue #7 approved conversational-PO-workspace and design-dependency comments; `AGENTS.md`; `docs/SCOPE.md`; `docs/design/DESIGN_GATE.md`; `docs/design/ARCHITECTURE_GOVERNANCE_TRACKS.md`; `docs/design/ROLE_RACI.md`; `docs/design/DECISION_LOG.md`.
+
+### ADMIN-PROJECT-OWNER-CONSOLE-001
+
+- ID: ADMIN-PROJECT-OWNER-CONSOLE-001
+- Title: Project Owner / Architecture / Scope Administration Console
+- Type: Epic / Feature
+- Parent: Project governance / Admin tooling
+- Priority: P1
+- Status: Not started
+- Lane: Safe lane
+- Owner: Mike / ChatGPT orchestration / Codex implementation
+- Source: Parent approval 2026-08-22; GitHub Issue #7 and approved conversational-PO-workspace comment.
+- Problem: Project scope, architecture, repository evidence, alignment gaps, decision-support views, and proposed portfolio changes lack one governed human review surface. Without a canonical-aware console, evidence can remain fragmented and proposed changes can be confused with committed truth.
+- Desired outcome: Create a Project Owner administration console that provides evidence-backed portfolio, architecture, repository, guardrail, and decision-support views; a persistent contextual PO Agent workspace; clearly separated Working and Canonical portfolio states; scenario planning; a proposed-change ledger and consolidated Change Set review; and controlled, auditable Markdown write-back through normal repo governance.
+- In scope:
+  - Project overview; Scope Portfolio; Scope.MD alignment and reconciliation queue; filtering/search; evidence-backed visualizations; Risk-Adjusted Value Matrix; WSJF view; dependency map; MVL / Closed-Loop completeness; Blast Radius view; and Evaluation / Guardrail readiness.
+  - Architecture Explorer; Repository Explorer; Markdown inventory; and Guardrail Status, with current application state distinguished from future Closed-Loop architecture.
+  - A persistent, context-aware conversational PO Agent workspace alongside Scope, visualizations, and Architecture. Context includes selected scope items, active filters, chart/graph selections, dependency nodes/subgraphs, reconciliation queues, Canonical/Working values, and relevant evidence.
+  - Contextual PO interaction that can explain, challenge, compare, recommend, and propose changes across multiple selected scope items without leaving the review surface.
+  - Working versus Canonical portfolio state, scenario planning, deterministic recalculation only when required inputs exist, clear Proposed/Uncommitted labeling, individual mutation undo/revert, and a session proposed-change ledger.
+  - Consolidated Change Set review showing before/after Markdown, affected scope IDs/files, downstream metric/visual effects, conflicts, and guardrail confirmations before explicit PO approval.
+  - Future UI proposals/edits for Priority, Status, description/problem/desired outcome, size/effort, scoring metadata, Next Action, approved ownership/categorization fields, and dependencies.
+  - Controlled Markdown write-back that resolves canonical records by stable scope ID, validates branch/current content, fails closed on ambiguous or stale targets, and follows the `GOV-PO-AGENT-001` structured mutation and Change Set persistence contract.
+- Out of scope: Application implementation in this capture; duplicate or contradictory console-owned scoring/mutation logic; direct `main` writes; silent Canonical mutation; Supabase/training-data writes; changes to `imports/v8.4/data/*.json`; deployment, merge, or Closed-Loop implementation authorization.
+- Acceptance criteria: Approved console capabilities and conversational workflow are design-ready; the console consumes `GOV-PO-AGENT-001` evidence, scoring, recommendation, conversation, dependency, mutation, and approval contracts; Working and Canonical states remain visibly isolated; missing scores are not guessed; one reviewed Change Set drives branch/PR write-back; ambiguous/stale writes fail closed; Scope.MD Aligned = yes.
+- Dependencies: Requires `GOV-PO-AGENT-001` as the intelligence/governance foundation. Also depends on canonical `docs/SCOPE.md`, repository/architecture evidence sources, admin authorization, and normal architecture/guardrail and branch/PR governance.
+- Risks: A UI-local scoring or mutation model could contradict canonical governance; proposed state could appear committed; visualizations could imply unsupported precision; stale Markdown targets could corrupt scope; admin credentials or write authority could exceed least privilege.
+- Next action: Define the console technical design and phased read-only/controlled-write delivery against `GOV-PO-AGENT-001`; do not begin implementation until required design and governance gates are satisfied.
+- Links / evidence: GitHub Issue #7; GitHub Issue #7 approved conversational-PO-workspace and `GOV-PO-AGENT-001` dependency comments; GitHub Issue #8; `GOV-PO-AGENT-001`; `AGENTS.md`; `docs/SCOPE.md`.
 
 ## Gemini / Source-Review Intake Records
 
