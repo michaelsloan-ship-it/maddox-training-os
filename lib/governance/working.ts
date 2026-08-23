@@ -1,5 +1,5 @@
 import { calculateWsjf, isScoreDimension, isValidScoreValue } from "./scoring";
-import { detectDependencyCycles, directDependencies, directDependents } from "./dependencies";
+import { detectDependencyCycles, directDependencies, directDependents, validateDependencyEdges } from "./dependencies";
 import { supportedScopeStatuses } from "./validation";
 import { confidenceLevels, provenanceClasses, scopePriorities, type CanonicalPortfolio, type DependencyEdge, type PortfolioDerivedFacts, type PortfolioMutation, type ScopeItem, type ValidationDiagnostic, type WorkingPortfolio } from "./types";
 
@@ -23,9 +23,9 @@ export function validateMutation(portfolio: CanonicalPortfolio, mutation: Portfo
     const proposed = Array.isArray(mutation.proposedValue) ? mutation.proposedValue as DependencyEdge[] : [];
     for (const edge of proposed) {
       if (edge.fromScopeId !== mutation.scopeId) diagnostics.push({ code: "malformed_dependency_source", severity: "error", scopeId: mutation.scopeId, message: `Dependency source must be ${mutation.scopeId}.` });
-      if (!portfolio.items.some((candidate) => candidate.id === edge.toScopeId)) diagnostics.push({ code: "unknown_dependency_target", severity: "error", scopeId: mutation.scopeId, message: `Unknown dependency target: ${edge.toScopeId}.` });
-      if (edge.fromScopeId === edge.toScopeId) diagnostics.push({ code: "self_dependency", severity: "error", scopeId: mutation.scopeId, message: "Self dependency is not allowed." });
     }
+    const candidateEdges = edges.filter((edge) => edge.fromScopeId !== mutation.scopeId).concat(proposed);
+    diagnostics.push(...validateDependencyEdges(portfolio, candidateEdges));
   }
   return diagnostics;
 }
@@ -88,8 +88,7 @@ function applyMutation(items: ScopeItem[], mutation: PortfolioMutation) {
   else if (mutation.fieldPath.startsWith("scores.")) {
     const dimension = mutation.fieldPath.slice("scores.".length);
     if (isScoreDimension(dimension)) {
-      const existing = item.scores[dimension];
-      item.scores[dimension] = existing ? { ...existing, value: mutation.proposedValue as number | null } : {
+      item.scores[dimension] = {
         dimension,
         value: mutation.proposedValue as number | null,
         state: mutation.proposedValue === null ? "not_scored" : "proposed",

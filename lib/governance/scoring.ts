@@ -1,4 +1,4 @@
-import { scoreDimensions, type PortfolioScore, type ScoreDimension, type WsjfInputName, type WsjfResult } from "./types";
+import { confidenceLevels, provenanceClasses, scoreDimensions, type PortfolioScore, type ScoreDimension, type WsjfInputName, type WsjfResult } from "./types";
 
 export function isScoreDimension(value: string): value is ScoreDimension {
   return scoreDimensions.includes(value as ScoreDimension);
@@ -10,6 +10,8 @@ export function isValidScoreValue(value: unknown): value is number {
 export function validatePortfolioScore(score: PortfolioScore): string[] {
   const errors: string[] = [];
   if (!isScoreDimension(score.dimension)) errors.push("invalid_score_dimension");
+  if (!provenanceClasses.includes(score.provenance)) errors.push("invalid_provenance");
+  if (!confidenceLevels.includes(score.confidence)) errors.push("invalid_confidence");
   if (score.value !== null && !isValidScoreValue(score.value)) errors.push("invalid_score_value");
   if (score.state === "not_scored" && score.value !== null) errors.push("not_scored_has_value");
   if (score.state !== "not_scored" && score.value === null) errors.push("scored_value_missing");

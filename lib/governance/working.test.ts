@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { addProposedMutation, createWorkingPortfolio, withdrawMutation } from "./working";
-import type { CanonicalPortfolio, PortfolioMutation, ScopeItem } from "./types";
+import type { CanonicalPortfolio, Confidence, DependencyEdge, PortfolioMutation, ProvenanceClass, ScopeItem } from "./types";
 
 const scopeItem: ScopeItem = {
   id: "TEST-SCOPE-001", title: "Test", type: "Feature", parent: "Governance", priority: "P1", status: "Not started", lane: "Safe lane",
@@ -69,4 +69,58 @@ describe("immutable Working Portfolio", () => {
     expect(working.canonical.items[0].scores).toEqual({});
     expect(working.canonical.dependencyEdges).toEqual([]);
   });
+
+  it("replaces stale score assessment metadata with the current mutation evidence", () => {
+    const oldScore = {
+      dimension: "business_user_value" as const, value: 3, state: "canonical" as const, provenance: "observed_fact" as const,
+      evidenceRefs: ["old-evidence"], rationale: "old rationale", confidence: "low" as const, assessmentVersion: "old-v1",
+      assessedAt: "2026-01-01T00:00:00Z", approvalState: "approved" as const, contradictions: ["old contradiction"], uncertainty: ["old uncertainty"],
+    };
+    const scoredItem = { ...scopeItem, scores: { business_user_value: oldScore } };
+    const scoredCanonical = { ...canonical, items: [scoredItem] };
+    const current = mutation({
+      mutationId: "score-replacement", fieldPath: "scores.business_user_value", canonicalValue: 3, proposedValue: 5,
+      evidenceRefs: ["new-evidence"], rationale: "new rationale", provenance: "po_approved_decision", confidence: "high",
+    });
+    const working = createWorkingPortfolio(scoredCanonical, [current]);
+    expect(working.effectiveItems[0].scores.business_user_value).toEqual({
+      dimension: "business_user_value", value: 5, state: "proposed", provenance: "po_approved_decision",
+      evidenceRefs: ["new-evidence"], rationale: "new rationale", confidence: "high", assessmentVersion: null,
+      assessedAt: null, approvalState: "pending", contradictions: [], uncertainty: [],
+    });
+    expect(working.canonical.items[0].scores.business_user_value).toEqual(oldScore);
+    expect(scoredCanonical.items[0].scores.business_user_value).toEqual(oldScore);
+  });
+
+  it("rejects invalid candidate dependency graphs and leaves the effective graph unchanged", () => {
+    const existing = dependencyEdge("SECOND-SCOPE-001", "TEST-SCOPE-001");
+    const second = { ...scopeItem, id: "SECOND-SCOPE-001", title: "Second", sourceLocation: { ...scopeItem.sourceLocation, heading: "SECOND-SCOPE-001" } };
+    const expanded = { ...canonical, items: [scopeItem, second], dependencyEdges: [existing] };
+    const duplicate = dependencyEdge("TEST-SCOPE-001", "SECOND-SCOPE-001");
+    const proposed = mutation({ mutationId: "bad-graph", fieldPath: "dependencyEdges", canonicalValue: [], proposedValue: [duplicate, duplicate] });
+    const working = createWorkingPortfolio(expanded, [proposed]);
+    expect(working.diagnostics).toContainEqual(expect.objectContaining({ code: "duplicate_dependency_edge" }));
+    expect(working.effectiveDependencyEdges).toEqual([existing]);
+  });
+
+  it.each([
+    ["invalid_dependency_relationship", { relationshipType: "invalid" }],
+    ["invalid_provenance", { provenance: "invalid" }],
+    ["invalid_confidence", { confidence: "invalid" }],
+  ] as const)("rejects runtime dependency vocabulary: %s", (code, edgeOverride) => {
+    const second = { ...scopeItem, id: "SECOND-SCOPE-001", title: "Second", sourceLocation: { ...scopeItem.sourceLocation, heading: "SECOND-SCOPE-001" } };
+    const expanded = { ...canonical, items: [scopeItem, second] };
+    const malformed = { ...dependencyEdge("TEST-SCOPE-001", "SECOND-SCOPE-001"), ...edgeOverride } as unknown as DependencyEdge;
+    const proposed = mutation({ fieldPath: "dependencyEdges", canonicalValue: [], proposedValue: [malformed] });
+    const working = createWorkingPortfolio(expanded, [proposed]);
+    expect(working.diagnostics).toContainEqual(expect.objectContaining({ code }));
+    expect(working.effectiveDependencyEdges).toEqual([]);
+  });
 });
+
+function dependencyEdge(fromScopeId: string, toScopeId: string, overrides: Partial<DependencyEdge> = {}): DependencyEdge {
+  return {
+    fromScopeId, toScopeId, relationshipType: "requires", state: "proposed", provenance: "observed_fact" as ProvenanceClass,
+    evidenceRefs: ["fixture"], confidence: "high" as Confidence, ...overrides,
+  };
+}

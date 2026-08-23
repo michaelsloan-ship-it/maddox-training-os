@@ -1,4 +1,4 @@
-import type { CanonicalPortfolio, DependencyEdge, ScopePriority, ValidationDiagnostic } from "./types";
+import { confidenceLevels, dependencyRelationshipTypes, provenanceClasses, type CanonicalPortfolio, type DependencyEdge, type ScopePriority, type ValidationDiagnostic } from "./types";
 
 const sequencingRelationships = new Set(["blocks", "blocked_by", "requires", "required_by"]);
 
@@ -7,6 +7,9 @@ export function validateDependencyEdges(portfolio: CanonicalPortfolio, edges: De
   const ids = new Set(portfolio.items.map((item) => item.id));
   const seen = new Set<string>();
   for (const edge of edges) {
+    if (!dependencyRelationshipTypes.includes(edge.relationshipType)) diagnostics.push({ code: "invalid_dependency_relationship", severity: "error", scopeId: edge.fromScopeId, message: `Invalid dependency relationship: ${String(edge.relationshipType)}.` });
+    if (!provenanceClasses.includes(edge.provenance)) diagnostics.push({ code: "invalid_provenance", severity: "error", scopeId: edge.fromScopeId, message: `Invalid dependency provenance: ${String(edge.provenance)}.` });
+    if (!confidenceLevels.includes(edge.confidence)) diagnostics.push({ code: "invalid_confidence", severity: "error", scopeId: edge.fromScopeId, message: `Invalid dependency confidence: ${String(edge.confidence)}.` });
     if (!ids.has(edge.fromScopeId) || !ids.has(edge.toScopeId)) diagnostics.push({ code: "unknown_dependency_target", severity: "error", scopeId: edge.fromScopeId, message: `Dependency ${edge.fromScopeId} -> ${edge.toScopeId} references an unknown scope ID.` });
     if (edge.fromScopeId === edge.toScopeId) diagnostics.push({ code: "self_dependency", severity: "error", scopeId: edge.fromScopeId, message: `${edge.fromScopeId} cannot depend on itself.` });
     const key = `${edge.fromScopeId}:${edge.toScopeId}:${edge.relationshipType}`;
