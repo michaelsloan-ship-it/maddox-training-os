@@ -161,7 +161,7 @@ Every active scope item should use this structure, either as a detailed record b
 | 4.12 | DEF-QA-CODEX-RUNNER-001 | Codex is being used as a recurring manual smoke-test runner | P1 | In progress | Docs-only / QA workflow | Repeated forward browser regression is CI-owned; remove the remaining recurring manual core-route smoke burden. |
 | 4.13 | DEF-SUPABASE-STAGING-AUTOPAUSE-001 | Supabase staging project at risk of inactivity auto-pause | P2 | In progress | Docs-only / environment-safety | Warning and project ref are documented; decision remains whether to allow manual resume, add a safe read-only staging health check, or upgrade if staging uptime matters. |
 | 4.14 | DEF-QA-USAGE-LEDGER-001 | No prompt-level Codex usage ledger exists | P2 | Not started | Docs-only / workflow | Define a lightweight usage ledger after the environment and Gantt duration items are handled. |
-| 4.15 | GOV-PO-AGENT-001 | Project Owner Intelligence & Portfolio Governance Agent | P1 | Not started | Safe lane / governance architecture | Define and validate the evidence-backed PO intelligence, scoring, dependency, mutation, approval, and evaluation contracts before implementation. |
+| 4.15 | GOV-PO-AGENT-001 | Project Owner Intelligence & Portfolio Governance Agent | P1 | Not started | Safe lane / governance architecture | Design and implement Phase A deterministic foundations only; no LLM, Admin UI, GitHub write, or Supabase training-data changes. |
 | 4.16 | ADMIN-PROJECT-OWNER-CONSOLE-001 | Project Owner / Architecture / Scope Administration Console | P1 | Not started | Safe lane | Design the human interaction and visualization surface against the approved `GOV-PO-AGENT-001` contracts before implementation. |
 | 5 | CODE-COMMENT-AUDIT-001 | Stale Inline Comment / TODO Audit | P1 | Completed | Fast lane | Inspect-only comment-risk scan is recorded in the detailed scope record; no behavior changes were required. |
 | 6 | FORENSIC-DAY-SESSION-MISMATCH-001 | Forensic Day/Session data-flow audit | P1 | Completed | Fast lane | Audit found Day and Session use divergent presentation paths; use findings to drive canonical contract. |
@@ -260,7 +260,7 @@ Execution gate: tactical current-app defects may be fixed separately as bounded 
 
 | Status | IDs |
 | --- | --- |
-| Deferred | None |
+| Deferred | GOV-ADMIN-AUTH-HARDENING-001 |
 | Not started | AI-COACH-001 |
 | Scope review required | AGENTIC-WORKFLOW-001, AGENTIC-WORKFLOW-002 |
 
@@ -1293,7 +1293,7 @@ Advanced KPI scope:
 - Status: Not started
 - Lane: Safe lane / governance architecture
 - Owner: Mike / ChatGPT orchestration / Codex implementation
-- Source: Parent approval 2026-08-22; GitHub Issue #8.
+- Source: Parent conceptual/functional approval 2026-08-22; Product Owner Technical Design v1 approval 2026-08-23; GitHub Issue #8.
 - Problem: Portfolio truth, prioritization, dependencies, scoring evidence, release evidence, and governance are distributed across project sources. Missing metadata is difficult to assess consistently, and portfolio decisions can become dependent on chat interpretation.
 - Desired outcome: Create an evidence-backed conversational Product Owner intelligence layer that gathers project evidence; distinguishes facts from assessments; proposes missing portfolio metadata; scores scope using explicit rubrics; analyzes dependencies and sequencing; identifies stale or misaligned scope; supports scenario planning; challenges PO assumptions constructively; creates structured proposed scope mutations; maintains Working versus Canonical state; generates auditable Change Sets; and preserves human Product Owner authority.
 - In scope:
@@ -1312,12 +1312,14 @@ Advanced KPI scope:
   - Architecture/Guardrail handoff: the PO Agent owns portfolio/product intelligence; Architecture/Guardrail authority owns architectural legality and safety and may block invalid persistence with evidence and remediation options.
   - Autonomy levels L0 Observe, L1 Analyze, L2 Recommend, L3 Draft validated change set, L4 controlled branch/PR execution after authorization, and L5 autonomous canonical mutation. Initial target is L2 plus gated L3; L5 is not approved.
   - A golden PO Agent evaluation suite covering evidence/citation correctness; scoring consistency and unsupported scoring; hallucinated/missed dependencies; stale-scope and alignment detection; architecture/guardrail compliance; unsafe-action escalation; recommendation/tradeoff quality; mutation correctness; Canonical/Working isolation; Markdown patch targeting; and human-approval escalation.
+  - Approved Technical Design v1 decisions: use the existing Next.js/TypeScript server runtime; use the OpenAI Agents SDK for TypeScript server-side; expose typed function tools only, with no shell, `apply_patch`, or generic filesystem tool; use a deterministic SCOPE parser and Markdown patcher; overlay Working Portfolio state on an immutable Canonical snapshot; keep governance/session data separate from athlete training tables; do not require Admin authentication for the current private-family deployment; defer Supabase Auth until broader-go-live hardening; use an eventual least-privilege server-side GitHub integration for GitHub writes; and complete deterministic foundations plus the evaluation harness before gated L3 writes.
+  - Current private-use Admin access decision: the Admin/PO Console is not linked from athlete-facing navigation and may use an unlinked route known to the Product Owner. This is private-deployment convenience, not a production-grade authentication boundary. Existing athlete Supabase anon/RLS permissions must not be broadened for Admin functionality, and all GitHub/repository mutation safeguards remain unchanged.
 - Out of scope: Application implementation in this capture; autonomous canonical mutation; direct `main` writes; scope deletion/rationalization; self-approval of agent assessments; merges; deployments; Production or training-data writes; changes to `imports/v8.4/data/*.json`; bypass of normal design, architecture, safety, or release governance.
-- Acceptance criteria: Evidence/provenance, 1-5 rubric, dependency, three-state, structured mutation, Change Ledger/write-back, Architecture/Guardrail, autonomy, Admin Console integration, and golden-evaluation contracts are accepted and versionable; missing inputs remain explicit; direct-main and L5 mutation remain disabled; Scope.MD Aligned = yes.
+- Acceptance criteria: The conceptual/functional contract and Technical Design v1 are PO-approved; evidence/provenance, 1-5 rubric, dependency, three-state, structured mutation, Change Ledger/write-back, Architecture/Guardrail, autonomy, Admin Console integration, and golden-evaluation contracts are accepted and versionable; missing inputs remain explicit; direct-main and L5 mutation remain disabled; Scope.MD Aligned = yes.
 - Dependencies: Canonical `docs/SCOPE.md` authority; existing design, architecture, data-integrity, environment, and safety guardrails; `ADMIN-PROJECT-OWNER-CONSOLE-001` consumes this item's intelligence/conversation/governance contracts as its interaction surface.
 - Risks: Unsupported assessments could be mistaken for facts; fabricated scores or dependency edges could distort sequencing; Working state could leak into Canonical state; unsafe or ambiguous Markdown targeting could remove or rewrite scope; an agreeable agent could conceal important tradeoffs.
-- Next action: Complete design/evaluation readiness and gated technical design before any implementation; target L2 plus carefully gated L3 only.
-- Links / evidence: GitHub Issue #8; GitHub Issue #7 approved conversational-PO-workspace and design-dependency comments; `AGENTS.md`; `docs/SCOPE.md`; `docs/design/DESIGN_GATE.md`; `docs/design/ARCHITECTURE_GOVERNANCE_TRACKS.md`; `docs/design/ROLE_RACI.md`; `docs/design/DECISION_LOG.md`.
+- Next action: Design and implement GOV-PO-AGENT-001 Phase A — deterministic foundations only: domain types, deterministic SCOPE parser, canonical Portfolio model, evidence/provenance model, scoring engine, dependency graph, Working Portfolio reducer, structured mutation schema, and deterministic tests. No LLM, Admin UI, GitHub write, or Supabase training-data changes in Phase A.
+- Links / evidence: GitHub Issue #8 and Product Owner Technical Design v1 approval comment dated 2026-08-23; GitHub Issue #7 approved conversational-PO-workspace and design-dependency comments; GitHub Issue #10; `AGENTS.md`; `docs/SCOPE.md`; `docs/design/DESIGN_GATE.md`; `docs/design/ARCHITECTURE_GOVERNANCE_TRACKS.md`; `docs/design/ROLE_RACI.md`; `docs/design/DECISION_LOG.md`.
 
 ### ADMIN-PROJECT-OWNER-CONSOLE-001
 
@@ -1347,6 +1349,31 @@ Advanced KPI scope:
 - Risks: A UI-local scoring or mutation model could contradict canonical governance; proposed state could appear committed; visualizations could imply unsupported precision; stale Markdown targets could corrupt scope; admin credentials or write authority could exceed least privilege.
 - Next action: Define the console technical design and phased read-only/controlled-write delivery against `GOV-PO-AGENT-001`; do not begin implementation until required design and governance gates are satisfied.
 - Links / evidence: GitHub Issue #7; GitHub Issue #7 approved conversational-PO-workspace and `GOV-PO-AGENT-001` dependency comments; GitHub Issue #8; `GOV-PO-AGENT-001`; `AGENTS.md`; `docs/SCOPE.md`.
+
+### GOV-ADMIN-AUTH-HARDENING-001
+
+- ID: GOV-ADMIN-AUTH-HARDENING-001
+- Title: Admin authentication & broader-go-live security gate
+- Type: Feature / Governance hardening
+- Parent: GOV-PO-AGENT-001 / ADMIN-PROJECT-OWNER-CONSOLE-001
+- Priority: P3
+- Status: Deferred
+- Lane: Safe lane / security hardening
+- Owner: Product Owner / ChatGPT orchestration / Codex implementation
+- Source: Product Owner approval 2026-08-23; GitHub Issue #10.
+- Problem: The current private-family deployment intentionally does not require a formal Admin authentication model. An unlinked Admin route is acceptable for this deployment but must not become the security model for broader use.
+- Desired outcome: Keep authentication work out of the current critical path while creating an explicit mandatory security gate before broader exposure.
+- In scope:
+  - Current private-use posture: permit an unlinked/non-navigation Admin route; require no Supabase Auth implementation now; do not broaden athlete anon RLS; keep GitHub secrets server-side; and keep GitHub writes structured, explicitly approved, and branch/PR based.
+  - Automatic trigger contract: before any public launch; multi-family/multi-tenant use; external pilot or beta; coach/team/community access outside the current family; broader distribution where untrusted users could discover the Admin route; or materially broader privileged Admin capability, reclassify this item to P0 / Critical and make it a release blocker.
+  - When triggered, broader go-live cannot proceed until this security scope is completed or superseded by an explicitly approved stronger design.
+  - Future trigger scope: authenticated Admin identity; server-side authorization; authorization negative tests; secrets isolation; least-privilege privileged credentials; appropriate RLS/security review; auditability; and release proof of the hardened boundary.
+- Out of scope: Implementing authentication solely for current private-family use; broadening current athlete anon RLS; changing athlete-facing workflows; treating an unlinked route as a permanent security mechanism; application implementation during this docs reconciliation.
+- Acceptance criteria: While private-family use continues, the unlinked route is explicitly recognized as convenience rather than authentication and privileged safeguards remain intact. At the first trigger, this item is P0 / Critical and blocks release until authenticated/authorized Admin access, negative-path tests, secret isolation, least privilege, auditability, appropriate security/RLS review, and hardened-boundary release proof are complete or an explicitly approved stronger design supersedes it.
+- Dependencies: `GOV-PO-AGENT-001`; `ADMIN-PROJECT-OWNER-CONSOLE-001`; an approved broader-go-live or expanded privileged-capability decision.
+- Risks: An unlinked route may be discovered after audience expansion; privileged APIs could be abused without server-side authorization; the item could remain incorrectly low priority unless the automatic trigger is enforced.
+- Next action: Remain Deferred/P3 while application remains private-family use. At the first broader-go-live decision, reclassify to P0/Critical before any external exposure.
+- Links / evidence: GitHub Issue #10; GitHub Issue #8 Product Owner Technical Design v1 approval comment dated 2026-08-23; `GOV-PO-AGENT-001`; `ADMIN-PROJECT-OWNER-CONSOLE-001`; `AGENTS.md`.
 
 ## Gemini / Source-Review Intake Records
 
