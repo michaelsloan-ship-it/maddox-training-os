@@ -268,6 +268,28 @@ Execution gate: tactical current-app defects may be fixed separately as bounded 
 
 ## Detailed Scope Records
 
+### APP-ICONS-2026-001 — Approved Home Screen identity
+
+- ID: APP-ICONS-2026-001
+- Title: Install Mike's approved Maddox Training OS icon.
+- Type: Task
+- Parent: M.C.S. Apps maintenance
+- Priority: P1
+- Status: In progress
+- Lane: Fast lane
+- Owner: Mike / Codex
+- Source: Mike's October 20 implementation handoff and approved PNG package.
+- Problem: Generic Home Screen identity is difficult to distinguish from other apps.
+- Desired outcome: Exact approved lime M artwork and correct application name on iPhone/iPad.
+- In scope: Approved PNG assets, layout icon metadata, manifest icon references and Apple title; commit, deploy and read-only verification.
+- Out of scope: Training content, application flows, Supabase configuration or records, schema, logging, and unrelated QA changes.
+- Acceptance criteria: Standard checks pass; intended deployment is Ready; served metadata and icon bytes match approved assets. Real-device installation is Mike's final visual check.
+- Dependencies: Existing production Vercel project and Git integration.
+- Risks: Safari may retain previously installed shortcut icons.
+- Next action: Run required checks, publish approved identity, verify served assets.
+- Links / evidence: app/layout.tsx, app/manifest.ts, public/icons/maddox-training-os-*.png.
+
+
 ### CAL-UX-MOBILE-DAY-ROWS-001
 
 - ID: CAL-UX-MOBILE-DAY-ROWS-001

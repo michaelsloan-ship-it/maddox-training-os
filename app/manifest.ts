@@ -10,12 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: "#eef8fb",
     theme_color: "#10283b",
     icons: [
-      {
-        src: "/icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
-        purpose: "any",
-      },
+      { src: "/icons/maddox-training-os-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/icons/maddox-training-os-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
     ],
   };
 }

@@ -11,10 +11,10 @@ export const metadata: Metadata = {
   description: "Private youth hockey training planner and live session app.",
   applicationName: "Maddox Training OS",
   manifest: "/manifest.webmanifest",
-  icons: { icon: "/icon.svg" },
+  icons: { icon: [{ url: "/icons/maddox-training-os-192.png", sizes: "192x192", type: "image/png" }], apple: [{ url: "/icons/maddox-training-os-180.png", sizes: "180x180", type: "image/png" }] },
   appleWebApp: {
     capable: true,
-    title: "Maddox Training",
+    title: "Maddox Training OS",
     statusBarStyle: "default",
   },
 };
