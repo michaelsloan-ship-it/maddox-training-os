@@ -275,7 +275,7 @@ Execution gate: tactical current-app defects may be fixed separately as bounded 
 - Type: Task
 - Parent: M.C.S. Apps maintenance
 - Priority: P1
-- Status: In progress
+- Status: Completed
 - Lane: Fast lane
 - Owner: Mike / Codex
 - Source: Mike's October 20 implementation handoff and approved PNG package.
@@ -286,8 +286,8 @@ Execution gate: tactical current-app defects may be fixed separately as bounded 
 - Acceptance criteria: Standard checks pass; intended deployment is Ready; served metadata and icon bytes match approved assets. Real-device installation is Mike's final visual check.
 - Dependencies: Existing production Vercel project and Git integration.
 - Risks: Safari may retain previously installed shortcut icons.
-- Next action: Run required checks, publish approved identity, verify served assets.
-- Links / evidence: app/layout.tsx, app/manifest.ts, public/icons/maddox-training-os-*.png.
+- Next action: Mike may reinstall the Home Screen shortcut for final iPhone/iPad visual acceptance.
+- Links / evidence: icon commit `5274bca`; Vercel `dpl_F8GUYPH97iA6a1F9TBUNmRkvqnoK` READY; production HTML/manifest names and 180/192/512 PNG byte equality verified on 2026-10-20 at https://maddox-training-os.vercel.app. Lint, 289 tests, production build and v8.4 import verification passed. No data/sync/environment or training-plan changes; no new test requirements or other priorities changed.
 
 
 ### CAL-UX-MOBILE-DAY-ROWS-001
